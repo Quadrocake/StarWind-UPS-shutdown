@@ -6,9 +6,9 @@ $isLinux = $true ## $true for StarWind VSAN for vSphere and $false for StarWind 
 $WinServiceName = 'StarWindService'
 $LinServiceName = 'StarWindVSA.service'
 
-$StarWind = '192.168.12.207' #specify your StarWind VM (or host) ip-address
+$StarWind = '192.168.12.214' #specify your StarWind VM (or host) ip-address
 $Password = Get-Content C:\shutdown\cred4vm.txt | ConvertTo-SecureString
-$Cred = New-Object System.Management.Automation.PSCredential (“root”, $password)
+$Cred = New-Object System.Management.Automation.PSCredential ('root', $password)
 
 function Exit-SWMaintenanceMode {
     try{
@@ -39,7 +39,7 @@ function Exit-SWMaintenanceMode {
 
 Write-Host "Confirming the StarWind VSAN service is running"
 if($isLinux -eq $true){
-    $SSHSession = New-SSHSession -ComputerName $starwind -Credential $cred
+    $SSHSession = New-SSHSession -ComputerName $starwind -Credential $cred -AcceptKey:$true
     $SSH = $SSHSession | New-SSHShellStream
     $SSH.WriteLine("systemctl status $LinServiceName")
     Start-Sleep -Seconds 2
