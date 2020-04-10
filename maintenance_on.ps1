@@ -9,6 +9,7 @@ $StarWindVM1 = "SW-SUP-FS-00" #Name of first StarWind VM
 $StarWindVM2 = "SW-SUP-FS-01" #Name of second StarWind VM
 $ESXIhost1 = "192.168.1.231" #Name of first ESXI Host
 $ESXIhost2 = "192.168.1.232" #Name of second ESXI Host
+$StarWindIP = "192.168.10.10" #IP of StarWind VM
 
 $password = get-content C:\shutdown\cred.txt | convertto-securestring
 $password4host = get-content C:\shutdown\cred4host.txt | convertto-securestring
@@ -68,9 +69,6 @@ if ($vapps -ne $null)
 Write-Host "VApps stopped." -Foregroundcolor Green
 Add-Content $logfile "$(get-date -f dd/MM/yyyy) $(get-date -f HH:mm:ss) VApps stopped."
 Add-Content $logfile ""
-
-# Get a list of all powered on VMs - used for powering back on....
-Get-VM -Location $cluster | where-object {$_.PowerState -eq "PoweredOn"} | Select Name | Export-CSV $filename
 
 # Change DRS Automation level to partially automated...
 Write-Host "Changing cluster DRS Automation Level to Partially Automated" -Foregroundcolor green
@@ -173,7 +171,7 @@ Write-Host ""
 Import-Module StarWindX
 try
 {
-    $server = New-SWServer -host $StarWind -port 3261 -user root -password starwind
+    $server = New-SWServer -host $StarWindIP -port 3261 -user root -password starwind
     $server.Connect()
     write-host "Devices:" -foreground yellow
     foreach($device in $server.Devices){
@@ -200,13 +198,7 @@ finally
 {
        $server.Disconnect()
 }
-Enter-PSSession -ComputerName $StarWindVM1 -Credential Administrator
-$action = New-ScheduledTaskAction -Execute 'Powershell.exe' -Argument '-ExecutionPolicy Bypass c:\SW_Maintenance_Off.ps1 -RunType $true -Path c:\SW_Maintenance_Off.ps1.ps1'
-$trigger = New-ScheduledTaskTrigger -AtStartup -RandomDelay 00:00:30
-$settings = New-ScheduledTaskSettingsSet -Compatibility Win8
-$principal = New-ScheduledTaskPrincipal -UserId SYSTEM -LogonType ServiceAccount -RunLevel Highest
-$definition = New-ScheduledTask -Action $action -Principal $principal -Trigger $trigger -Settings $settings -Description "Maintenance Mode"
-Register-ScheduledTask -TaskName "Maintenance Mode off" -InputObject $definition
+
 Add-Content $logfile ""
 Add-Content $logfile "$(get-date -f dd/MM/yyyy) $(get-date -f HH:mm:ss) Processing power off of all hosts now"
 Sleep 30
