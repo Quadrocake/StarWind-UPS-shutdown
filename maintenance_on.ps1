@@ -1,15 +1,15 @@
 # Some variables
-$vcenter = "192.168.1.235"
-$username = "administrator@vsphere.local"
+$vcenter = "192.168.13.230"
+$username = "administrator@varenyk.local"
 $username4host = "root"
-$cluster = "SW-SUP-CLUSTER"
-$datacenter = "SWDATACENTER"
-$vCenterVMName = "SW-SUP-VCENTER" #Name of vCenter VM
-$StarWindVM1 = "SW-SUP-FS-00" #Name of first StarWind VM
-$StarWindVM2 = "SW-SUP-FS-01" #Name of second StarWind VM
-$ESXIhost1 = "192.168.1.231" #Name of first ESXI Host
-$ESXIhost2 = "192.168.1.232" #Name of second ESXI Host
-$StarWindIP = "192.168.10.10" #IP of StarWind VM
+$cluster = "Cluster"
+$datacenter = "Datacenter"
+$vCenterVMName = "VMware vCenter Server Appliance" #Name of vCenter VM
+$StarWindVM1 = "StarWindVSAN_01" #Name of first StarWind VM
+$StarWindVM2 = "StarWindVSAN_02" #Name of second StarWind VM
+$ESXIhost1 = "192.168.13.228" #Name of first ESXI Host
+$ESXIhost2 = "192.168.13.229" #Name of second ESXI Host
+$StarWindIP = "192.168.12.214" #IP of StarWind VM
 
 $password = get-content C:\shutdown\cred.txt | convertto-securestring
 $password4host = get-content C:\shutdown\cred4host.txt | convertto-securestring
@@ -213,12 +213,12 @@ Sleep 300
 Connect-VIServer $ESXIhost1 -Credential $credentials4host -WarningAction:SilentlyContinue
         Write-Host "Shutting down $ESXIhost1" -ForegroundColor Green
         Add-Content $logfile "$(get-date -f dd/MM/yyyy) $(get-date -f HH:mm:ss) Shutting down $ESXIhost1"
-        Stop-VMHost $ESXIhost1 -Confirm:$false -Force
+        Stop-VMHost $ESXIhost1 -Confirm:$false -Force -RunAsync
 Sleep 120
 Connect-VIServer $ESXIhost2 -Credential $credentials4host -WarningAction:SilentlyContinue
         Write-Host "Shutting down $ESXIhost2" -ForegroundColor Green
         Add-Content $logfile "$(get-date -f dd/MM/yyyy) $(get-date -f HH:mm:ss) Shutting down $ESXIhost2"
-        Stop-VMHost $ESXIhost2 -Confirm:$false -Force
+        Stop-VMHost $ESXIhost2 -Confirm:$false -Force -RunAsync
 Add-Content $logfile ""
 Add-Content $logfile "$(get-date -f dd/MM/yyyy) $(get-date -f HH:mm:ss) All done!"
 # That's a wrap
