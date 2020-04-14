@@ -20,7 +20,7 @@ function Exit-SWMaintenanceMode {
                 $device.Name
                 $disk = $device.Name
                 if ($device.Name -like "HAimage*"){
-                    $device.SwitchMaintenanceMode($false, $true)
+                    $device.SwitchMaintenanceMode($false, $false)
                     write-host "$disk exited maintenance mode"
                 } else {
                     write-host "$disk is not an HA device, maintenance mode is not supported"
@@ -28,7 +28,7 @@ function Exit-SWMaintenanceMode {
             }
         }
     } catch {
-        Write-Host $_ -foreground red
+        Write-Error $_ -foreground red -ErrorAction Stop
     } finally {
         $server.Disconnect()
     }
@@ -65,6 +65,8 @@ function Start-RescanScript($StarWindVM) {
 		$SSHSession = New-SSHSession -ComputerName $StarWindVM -Credential $cred -AcceptKey:$true
 		$SSH = $SSHSession | New-SSHShellStream
 		$SSH.WriteLine("/opt/StarWind/StarWindVSA/drive_c/StarWind/hba_rescan.ps1")
+        Start-Sleep -Seconds 20
+        $SSH.read()
 	} catch {
 		Write-Host $_ -foreground red
 	} finally {
@@ -79,11 +81,13 @@ while ($true) {
 		For ($i=0; $i -lt 5; $i++) {
 			try{
                 Write-Host "Let's wait 30 seconds before trying to connect"
-                Start-Sleep -Seconds 10
+                Start-Sleep -Seconds 30
+
 				Write-Host "Trying to exit maintenance mode"
 				Exit-SWMaintenanceMode
 
                 Start-Sleep -Seconds 10
+
                 Write-Host "Starting rescan script"
                 Start-RescanScript($StarWindVM1)
                 Start-RescanScript($StarWindVM2)

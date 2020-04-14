@@ -17,7 +17,6 @@ $credentials = new-object System.Management.Automation.PSCredential $username, $
 $credentials4host = new-object System.Management.Automation.PSCredential $username4host, $password4host
 $time = ( get-date ).ToString('HH-mm-ss')
 $date = ( get-date ).ToString('dd-MM-yyyy')
-$filename = "c:\shutdown\poweredonvms-$date-$time.csv"
 $logfile = New-Item -type file "C:\shutdown\ShutdownLog-$date-$time.txt" -Force
 
 Write-Host ""
@@ -213,12 +212,12 @@ Sleep 300
 Connect-VIServer $ESXIhost1 -Credential $credentials4host -WarningAction:SilentlyContinue
         Write-Host "Shutting down $ESXIhost1" -ForegroundColor Green
         Add-Content $logfile "$(get-date -f dd/MM/yyyy) $(get-date -f HH:mm:ss) Shutting down $ESXIhost1"
-        Stop-VMHost $ESXIhost1 -Confirm:$false -Force -RunAsync
+        Stop-VMHost $ESXIhost1 -Confirm:$false -Force
 Sleep 120
 Connect-VIServer $ESXIhost2 -Credential $credentials4host -WarningAction:SilentlyContinue
         Write-Host "Shutting down $ESXIhost2" -ForegroundColor Green
         Add-Content $logfile "$(get-date -f dd/MM/yyyy) $(get-date -f HH:mm:ss) Shutting down $ESXIhost2"
-        Stop-VMHost $ESXIhost2 -Confirm:$false -Force -RunAsync
+        Stop-VMHost $ESXIhost2 -Confirm:$false -Force
 Add-Content $logfile ""
 Add-Content $logfile "$(get-date -f dd/MM/yyyy) $(get-date -f HH:mm:ss) All done!"
 # That's a wrap
