@@ -1,3 +1,16 @@
+#################################################################################
+# Execute lines below before running this script, to generate securestring passwords
+#################################################################################
+#mkdir c:\shutdown
+#Read-Host -Prompt "Enter password for vCenter" -AsSecureString | ConvertFrom-SecureString | out-file c:\shutdown\cred.txt
+#(type in the password of the user you want to use for running the script)
+#cat c:\shutdown\cred.txt
+#
+#Read-Host -Prompt "Enter password for ESXI hosts" -AsSecureString | ConvertFrom-SecureString | out-file c:\shutdown\cred4host.txt
+#(type in the password of the user you want to use for running the script)
+#cat c:\shutdown\cred4host.txt
+################################################################################
+
 # Some variables
 $vcenter = "192.168.13.230"
 $username = "administrator@varenyk.local"
