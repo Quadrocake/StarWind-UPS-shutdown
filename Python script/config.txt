@@ -1,0 +1,44 @@
+[VSphere]
+# VSphere credentials
+host=192.168.1.1
+user=administrator@vsphere.local
+pwd=password
+
+[Host1]
+# ESXi host 1 credentials
+host=192.168.1.2
+user=root
+pwd=password
+
+[Host2]
+# ESXi host 2 credentials
+host=192.168.1.3
+user=root
+pwd=password
+
+[StarWind]
+# Enter ip of one of StarWind VMs
+host=192.168.1.10
+# Default credentials for StarWind service
+port=3261
+swlogin=root
+swpass=starwind
+
+[Parameters]
+# True will shutdown only VMs located in cluster
+# False will shutdown all VMs visible in VCenter
+shutdownclustervmsonly=True
+# Change to False if VCenter is located outside of cluster and should stay online
+shutdownvcenter=True
+
+[Namings]
+# Enter names of datacenter and cluster
+datacentername=Datacenter
+clustername=Cluster
+
+[ShutdownLast]
+# List of VMs that should be turned off right before shutting down hosts
+# Make sure to not add VMs located on StarWind datastores and to not repeat values on the left
+starwindvm1=SW1
+starwindvm2=SW2
+vcentervm=VMware vCenter Server Appliance
